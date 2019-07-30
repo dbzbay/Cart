@@ -1,0 +1,15 @@
+config:
+  # target: 'https://artillery.io'
+  //mongo
+  target: 'http://localhost:3099/item:?id=09900101'
+  # target: 'localhost:27017'
+  phases:
+    - duration: 10
+      arrivalRate: 2000
+  defaults:
+    headers:
+      x-my-service-auth: '987401838271002188298567'
+scenarios:
+  - flow:
+    - get:
+        url: "/docs"
