@@ -13,7 +13,8 @@ export default class Cart extends React.Component {
       cartQty: 0,
       cartTotal: 0,
       //sample cart data for testing
-      cart: []
+      cart: [{"_id":"09000100","name":"Intelligent Soft Tuna","price":999,"image1":"http://lorempixel.com/640/480/cats","seller":"Wehner, Howell and Senger","condition":"Sleek","category":"Jewelery","__v":0, "qty":3},
+      {"_id":"09900100","name":"Generic Plastic Keyboard","price":873,"image1":"http://lorempixel.com/640/480/cats","seller":"Satterfield, Stark and Bauch","condition":"Refined","category":"Automotive","__v":0, "qty":3}] 
     }
 
     this.getItem = this.getItem.bind(this)
@@ -105,7 +106,7 @@ export default class Cart extends React.Component {
       // this.setState({ testItem: data.data });
     });
   }
-
+ 
   componentDidMount() {
     //event listener for if an item is bought
     window.addEventListener('itemBought', event => {

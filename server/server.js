@@ -3,10 +3,12 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 //const {Item} = require('../database/db')
 
-const {Item} = require('../database/tenMillion')
+//const {Item} = require('../database/tenMillion')
+const { Item } = require('../database/tenMillionMore')
 
 const path = require('path')
 const mongoose = require('mongoose')
+const pg = require('pg');
 const port = process.env.PORT || 3099;
 const host = process.env.HOST || '0.0.0.0'
 
@@ -15,7 +17,15 @@ require('dotenv').config()
 
 //mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PW}@zbaycart-tvfyb.mongodb.net/ZbayCart?retryWrites=true&w=majority`, { useNewUrlParser: true });
 
-mongoose.connect('mongodb://localhost/10million', { useNewUrlParser: true });
+//mongoose.connect('mongodb://localhost/10million', { useNewUrlParser: true });
+
+Item.connect()
+  .then((success) => {
+    console.log('-Database Connected.');
+  })
+  .catch((err) => {
+    console.error('Error connecting to the database: ', err);
+  });
 
 const app = express()
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -24,21 +34,33 @@ app.use(cors())
 
 app.use(express.static(path.join(__dirname, '../dist')));
 
-app.get('/items', (req, res) => {
-  Item.find()
-    .exec()
-    .then(results => {
-      res.status(200).send(results)
-    })
-    .catch(err => res.status(500).json({message: 'There was an error with your request', error: err}));
-});
+// app.get('/items', (req, res) => {
+//   Item.find()
+//     .exec()
+//     .then(results => {
+//       res.status(200).send(results)
+//     })
+//     .catch(err => res.status(500).json({message: 'There was an error with your request', error: err}));
+// });
 
 //format for request must be like http://127.0.0.1:3099/item:?id=RAI357e
+// app.get('/item:id', (req, res) => {
+//   Item.findById(req.query.id)
+//     .exec()
+//     .then(results => {
+//       res.status(200).send(results)
+//     })
+//     .catch(err => {
+//       res.status(500).json({message: 'Invalid ID', error: err});
+//       console.log(err);
+//     });
+// });
+
 app.get('/item:id', (req, res) => {
-  Item.findById(req.query.id)
-    .exec()
+  Item.query(`SELECT * FROM public.tenmillion WHERE id = ('${req.query.id}');`)
+    //.exec()
     .then(results => {
-      res.status(200).send(results)
+      res.status(200).send(results.rows[0])
     })
     .catch(err => {
       res.status(500).json({message: 'Invalid ID', error: err});
